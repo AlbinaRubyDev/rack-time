@@ -1,5 +1,5 @@
 class TimeHandler
-  
+
   DATETIME_FORMATS = {
     'year' => '%Y',
     'month' => '%m',
@@ -9,25 +9,38 @@ class TimeHandler
     'second' => '%S'
   }.freeze
 
-  def initialize()
+  def initialize(request)
     @body = []
+    @time_params = parse(request)
   end
 
   def is_the_format_known?
-    #проверка белиберда или ок
-    #если ок - вернуть истину
-    #если не ок - вернуть ложь И заполнить body
-    #
-    #(если неизвестных форматов несколько, 
-    #все они должны быть перечислены в теле ответа, например: "Unknown time format [epoch, age]")
-    #
+    unknown = @time_params - DATETIME_FORMATS.keys
+    if unknown.any?
+      @body = return_body_unknown(unknown)
+      false
+    else
+      true
+    end
   end
 
   def return_time_in_format
-    #binding.irb
+    binding.irb
     #готовимся вернуть ответ
-    #вернуть статус - 200, headers, тело - сформированный ответ
-    #!они могут быть в любом порядке
-    #
+    #заполнить body
+  end
+
+  def body
+    @body
+  end
+
+  private
+
+  def return_body_unknown(unknown)
+    "Unknown time format [#{unknown.join(',')}]"
+  end
+
+  def parse(request)
+    request.params['format']&.split(',') || []
   end
 end

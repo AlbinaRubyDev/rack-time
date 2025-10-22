@@ -11,12 +11,12 @@ class App
   private
 
   def further_processing(request)
-    time_hundler = TimeHundler.new(request)
-    if time_hundler.is_the_format_known?
-      time_hundler.return_time_in_format
-      ok(time_hundler.body)
+    time_handler = TimeHandler.new(request)
+    if time_handler.is_the_format_known?
+      time_handler.return_time_in_format
+      ok(time_handler.body)
     else
-      unknown_format(time_hundler.body)
+      unknown_format(time_handler.body)
     end
   end
 
@@ -29,11 +29,11 @@ class App
   end
 
   def not_found
-    response(404, ['Not found'])
+    response(404, 'Not found')
   end
 
   def response(status, body)
-    [status, headers, body]
+    [status, headers, Array[body]]
   end
 
   def headers
