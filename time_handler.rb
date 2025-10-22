@@ -25,9 +25,10 @@ class TimeHandler
   end
 
   def return_time_in_format
-    binding.irb
-    #готовимся вернуть ответ
-    #заполнить body
+    @time_params.each do |param|
+      @body << Time.now.strftime(DATETIME_FORMATS[param])
+    end
+    @body = @body.join('-')
   end
 
   def body
