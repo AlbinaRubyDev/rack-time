@@ -3,8 +3,6 @@ require_relative 'time_handler'
 class App
   def call(env)
     request = Rack::Request.new(env)
-    return not_found unless request.path_info == '/time'
-
     further_processing(request)
   end
 
@@ -12,10 +10,11 @@ class App
 
   def further_processing(request)
     time_handler = TimeHandler.new(request)
-    if time_handler.is_the_format_known?
+    if time_handler.valid_format?
       time_handler.return_time_in_format
       ok(time_handler.body)
     else
+      time_handler.return_body_unknown
       unknown_format(time_handler.body)
     end
   end
@@ -33,10 +32,6 @@ class App
   end
 
   def response(status, body)
-    [status, headers, Array[body]]
-  end
-
-  def headers
-    { 'content-type' => 'text/plain' }
+    [status, {}, Array[body]]
   end
 end

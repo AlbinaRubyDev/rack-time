@@ -12,12 +12,11 @@ class TimeHandler
   def initialize(request)
     @body = []
     @time_params = parse(request)
+    @unknown = @time_params - DATETIME_FORMATS.keys
   end
 
-  def is_the_format_known?
-    unknown = @time_params - DATETIME_FORMATS.keys
-    if unknown.any?
-      @body = return_body_unknown(unknown)
+  def valid_format?
+    if @unknown.any?
       false
     else
       true
@@ -31,15 +30,15 @@ class TimeHandler
     @body = @body.join('-')
   end
 
+  def return_body_unknown
+    @body = "Unknown time format [#{@unknown.join(',')}]"
+  end
+
   def body
     @body
   end
 
   private
-
-  def return_body_unknown(unknown)
-    "Unknown time format [#{unknown.join(',')}]"
-  end
 
   def parse(request)
     request.params['format']&.split(',') || []
