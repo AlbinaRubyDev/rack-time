@@ -27,10 +27,6 @@ class App
     response(400, body)
   end
 
-  def not_found
-    response(404, 'Not found')
-  end
-
   def response(status, body)
     [status, {}, Array[body]]
   end
